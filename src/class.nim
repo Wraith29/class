@@ -3,9 +3,15 @@ import macros
 template static* {.pragma.}
 
 macro class*(head, body: untyped): untyped =
-  if head.kind != nnkIdent: return
-  result = newStmtList()
+  echo "Head"
+  echo head.astGenRepr()
+  echo ""
+  echo "Body"
+  echo body.astGenRepr()
+
   let typeName = head.strVal
+  result = newStmtList()
+
   var attrs = newNimNode(nnkRecList)
   let typeDef = newNimNode(nnkTypeSection)
     .add(newNimNode(nnkTypeDef)
