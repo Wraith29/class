@@ -3,12 +3,6 @@ import macros
 template static* {.pragma.}
 
 macro class*(head, body: untyped): untyped =
-  echo "Head"
-  echo head.astGenRepr()
-  echo ""
-  echo "Body"
-  echo body.astGenRepr()
-
   let typeName = head.strVal
   result = newStmtList()
 
