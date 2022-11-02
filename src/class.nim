@@ -24,12 +24,24 @@ macro class*(head, body: untyped): untyped =
 
   for statement in body.children:
     if statement.kind == nnkCall:
-      attrs.add(
-        newNimNode(nnkIdentDefs)
-          .add(ident(statement[0].strVal))
-          .add(ident(statement[1][0].strVal))
-          .add(newEmptyNode())
-      )
+      case statement[1][0].kind:
+      of nnkIdent:
+        attrs.add(
+          newNimNode(nnkIdentDefs)
+            .add(ident(statement[0].strVal))
+            .add(ident(statement[1][0].strVal))
+            .add(newEmptyNode())
+        )
+      of nnkBracketExpr:
+        attrs.add(
+          newNimNode(nnkIdentDefs)
+            .add(ident(statement[0].strVal))
+            .add(newNimNode(nnkBracketExpr)
+              .add(ident(statement[1][0][0].strVal))
+              .add(ident(statement[1][0][1].strVal)))
+            .add(newEmptyNode())
+        )
+      else: discard
     elif statement.kind in [nnkProcDef, nnkFuncDef]:
       var def = statement
       if def[4].kind == nnkEmpty:
